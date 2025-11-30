@@ -7,5 +7,6 @@ public class Post
     public string Content { get; set; } = string.Empty;
     public string Author { get; set; } = null!;
     public int Likes { get; set; }
+    public ICollection<Comment> Comments { get; } = new List<Comment>();
     
 }
