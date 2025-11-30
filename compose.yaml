@@ -1,0 +1,30 @@
+services:
+  app:
+    build: .
+    ports:
+      - '5193:5193'
+    environment:
+      - MyForum_DB_ConnectionString=${MyForum_DB_ConnectionString}
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+          target: .
+          initial_sync: true
+          ignore:
+            - bin/
+            - obj/
+  db:
+    image: postgres:latest
+    secrets:
+    - db_password
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - POSTGRES_DB=myforum_postgres
+    ports:
+      - '5432:5432'
+
+secrets:
+  db_password:
+    file: db_password.txt
