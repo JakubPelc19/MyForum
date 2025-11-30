@@ -1,6 +1,8 @@
 public class ThreadForum
 {
     public int Id { get; set; }
+    public int AuthorId { get; set; }
+    public User Author { get; set; } = null!;
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public ICollection<Post> Posts { get; } = new List<Post>();
