@@ -5,6 +5,8 @@
 @model UserRegisterViewModel;
 <div>
     <form asp-action="Register" method="POST">
+        <label asp-for="Username"">Username</label>
+        <input type="text" asp-for="Username"/>
         <label asp-for="Email">Email</label>
         <input type="email" asp-for="Email" placeholder="Enter email"/>
         <label asp-for="Password">Password</label>
