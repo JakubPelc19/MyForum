@@ -43,12 +43,14 @@ public class AuthController(AppDbContext _context) : Controller
             return View(user);
         
         
-
+        if (user.Password != user.ConfirmPassword)
+            return View(user);
+        
         User newUser = new User();
 
         var passwordhasher = new PasswordHasher<User>();
         var hashedpassword = passwordhasher.HashPassword(newUser, user.Password);
-
+        
 
         newUser.Email = user.Email;
         newUser.Username = user.Username;
