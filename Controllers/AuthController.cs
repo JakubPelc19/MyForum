@@ -19,4 +19,20 @@ public class AuthController : Controller
 
         return RedirectToAction("Index");
     }
+
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Register(UserRegisterViewModel user)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(user);
+        }
+
+        return RedirectToAction("Login");
+    }
 }
