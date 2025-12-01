@@ -13,12 +13,13 @@ public class AuthController(AppDbContext _context) : Controller
     }
 
     [HttpPost]
-    public IActionResult Login(UserLoginViewModel user)
+    public async Task<IActionResult> Login(UserLoginViewModel user)
     {
         if (!ModelState.IsValid)
         {
             return View(user);
         }
+
 
         return RedirectToAction("Index");
     }
@@ -53,7 +54,9 @@ public class AuthController(AppDbContext _context) : Controller
         newUser.Username = user.Username;
         newUser.PasswordHash = hashedpassword;
 
+        await _context.Users.AddAsync(newUser);
 
+        await _context.SaveChangesAsync();
 
         return RedirectToAction("Login");
     }
