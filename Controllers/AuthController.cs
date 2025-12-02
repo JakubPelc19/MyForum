@@ -54,7 +54,7 @@ public class AuthController(AppDbContext _context) : Controller
             authProperties);
 
 
-        return RedirectToAction("Index");
+        return Redirect("/");
     }
 
     public IActionResult Register()
