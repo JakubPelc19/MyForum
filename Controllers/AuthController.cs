@@ -16,23 +16,31 @@ public class AuthController(AppDbContext _context) : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(UserLoginViewModel user)
     {
         if (!ModelState.IsValid)
             return View(user);
 
-        var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+        var normalizedEmail = user.Email.Trim().ToLower();
+
+        var foundUser = await _context.Users.SingleOrDefaultAsync(u => u.Email == normalizedEmail);
         
         if (foundUser is null)
+        {  
+            ModelState.AddModelError("ErrorMessage", "Invalid credentials");
             return View(user);
+        }
         
-        var passwordhasher = new PasswordHasher<User>();
-
-        if (passwordhasher.VerifyHashedPassword(foundUser, foundUser.PasswordHash, user.Password) == PasswordVerificationResult.Failed)
+        var passwordHasher = new PasswordHasher<User>();
+        if (passwordHasher.VerifyHashedPassword(foundUser, foundUser.PasswordHash, user.Password) == PasswordVerificationResult.Failed)
+        {   
+            ModelState.AddModelError("ErrorMessage", "Invalid credentials");
             return View(user);
-
+        }
         var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.NameIdentifier, foundUser.Id.ToString()),
             new Claim(ClaimTypes.Name, foundUser.Username),
             new Claim(ClaimTypes.Email, foundUser.Email)
         };
@@ -45,6 +53,7 @@ public class AuthController(AppDbContext _context) : Controller
             ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
             IsPersistent = true,
             IssuedUtc = DateTimeOffset.UtcNow,
+            RedirectUri = "/"
 
         };
 
@@ -63,32 +72,42 @@ public class AuthController(AppDbContext _context) : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(UserRegisterViewModel user)
     {
         if (!ModelState.IsValid)
             return View(user);
         
+        var normalizedEmail = user.Email.Trim().ToLower();
+        var normalizedUsername = user.Username.Trim().ToLower();
+        
+        var collisionUsername = await _context.Users.AnyAsync(u => u.Username == normalizedUsername);
 
-        var collision = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email || u.Username == user.Username);
+        if (collisionUsername)    
+        {  
+            ModelState.AddModelError("Username", "Username is already taken");
+            return View(user);
+        }
 
-        if (collision is not null)    
+        var collisionEmail = await _context.Users.AnyAsync(u => u.Email == normalizedEmail);
+
+        if (collisionEmail)
+        {
+            ModelState.AddModelError("Email", "Email is already taken");
             return View(user);
+        }
         
-            
         
-        
-        if (user.Password != user.ConfirmPassword)    
-            return View(user);
         
         
         User newUser = new User();
 
-        var passwordhasher = new PasswordHasher<User>();
-        var hashedpassword = passwordhasher.HashPassword(newUser, user.Password);
+        var passwordHasher = new PasswordHasher<User>();
+        var hashedpassword = passwordHasher.HashPassword(newUser, user.Password);
         
 
-        newUser.Email = user.Email;
-        newUser.Username = user.Username;
+        newUser.Email = normalizedEmail;
+        newUser.Username = normalizedUsername;
         newUser.PasswordHash = hashedpassword;
 
         await _context.Users.AddAsync(newUser);
@@ -96,5 +115,13 @@ public class AuthController(AppDbContext _context) : Controller
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Login");
+    }
+
+    public async Task<IActionResult> SignOutAsync()
+    {
+        await HttpContext.SignOutAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme
+        );
+        return Redirect("/Auth/Login");
     }
 }
