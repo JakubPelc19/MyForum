@@ -117,7 +117,7 @@ public class AuthController(AppDbContext _context) : Controller
         return RedirectToAction("Login");
     }
 
-    public async Task<IActionResult> SignOutAsync()
+    public async Task<IActionResult> LogOut()
     {
         await HttpContext.SignOutAsync(
             CookieAuthenticationDefaults.AuthenticationScheme
