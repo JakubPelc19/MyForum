@@ -5,6 +5,8 @@ services:
       - '5193:5193'
     environment:
       - MyForum_DB_ConnectionString=${MyForum_DB_ConnectionString}
+    volumes:
+        - dataprotection:/root/.aspnet/DataProtection-Keys
     develop:
       watch:
         - action: rebuild
@@ -28,3 +30,6 @@ services:
 secrets:
   db_password:
     file: db_password.txt
+
+volumes:
+  dataprotection:
