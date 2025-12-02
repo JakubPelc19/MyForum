@@ -19,10 +19,7 @@ public class AuthController(AppDbContext _context) : Controller
     public async Task<IActionResult> Login(UserLoginViewModel user)
     {
         if (!ModelState.IsValid)
-        {
-            System.Console.WriteLine("Model není v pohodě");
             return View(user);
-        }
 
         var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
         
@@ -32,10 +29,7 @@ public class AuthController(AppDbContext _context) : Controller
         var passwordhasher = new PasswordHasher<User>();
 
         if (passwordhasher.VerifyHashedPassword(foundUser, foundUser.PasswordHash, user.Password) == PasswordVerificationResult.Failed)
-        {
-            System.Console.WriteLine("Hesla nejsou stejná");
             return View(user);
-        }
 
         var claims = new List<Claim>
         {
@@ -72,26 +66,20 @@ public class AuthController(AppDbContext _context) : Controller
     public async Task<IActionResult> Register(UserRegisterViewModel user)
     {
         if (!ModelState.IsValid)
-        {
-            System.Console.WriteLine("Model není validní");
             return View(user);
-        }
+        
 
         var collision = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email || u.Username == user.Username);
 
-        if (collision is not null)
-        {
-            Console.WriteLine("Nastala kolize");
+        if (collision is not null)    
             return View(user);
-        }
+        
             
         
         
-        if (user.Password != user.ConfirmPassword)   
-        { 
-            System.Console.WriteLine("Hesla nejsou stejná");
+        if (user.Password != user.ConfirmPassword)    
             return View(user);
-        }
+        
         
         User newUser = new User();
 
@@ -106,8 +94,6 @@ public class AuthController(AppDbContext _context) : Controller
         await _context.Users.AddAsync(newUser);
 
         await _context.SaveChangesAsync();
-
-        System.Console.WriteLine("Úspěšně zaregistrován");
 
         return RedirectToAction("Login");
     }
