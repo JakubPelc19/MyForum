@@ -16,29 +16,31 @@ public class AuthController(AppDbContext _context) : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(UserLoginViewModel user)
     {
         if (!ModelState.IsValid)
-        {
-            System.Console.WriteLine("Model není v pohodě");
             return View(user);
-        }
 
-        var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+        var normalizedEmail = user.Email.Trim().ToLower();
+
+        var foundUser = await _context.Users.SingleOrDefaultAsync(u => u.Email == normalizedEmail);
         
         if (foundUser is null)
-            return View(user);
-        
-        var passwordhasher = new PasswordHasher<User>();
-
-        if (passwordhasher.VerifyHashedPassword(foundUser, foundUser.PasswordHash, user.Password) == PasswordVerificationResult.Failed)
-        {
-            System.Console.WriteLine("Hesla nejsou stejná");
+        {  
+            ModelState.AddModelError("ErrorMessage", "Invalid credentials");
             return View(user);
         }
-
+        
+        var passwordHasher = new PasswordHasher<User>();
+        if (passwordHasher.VerifyHashedPassword(foundUser, foundUser.PasswordHash, user.Password) == PasswordVerificationResult.Failed)
+        {   
+            ModelState.AddModelError("ErrorMessage", "Invalid credentials");
+            return View(user);
+        }
         var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.NameIdentifier, foundUser.Id.ToString()),
             new Claim(ClaimTypes.Name, foundUser.Username),
             new Claim(ClaimTypes.Email, foundUser.Email)
         };
@@ -51,6 +53,7 @@ public class AuthController(AppDbContext _context) : Controller
             ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
             IsPersistent = true,
             IssuedUtc = DateTimeOffset.UtcNow,
+            RedirectUri = "/"
 
         };
 
@@ -60,7 +63,7 @@ public class AuthController(AppDbContext _context) : Controller
             authProperties);
 
 
-        return RedirectToAction("Index");
+        return Redirect("/");
     }
 
     public IActionResult Register()
@@ -69,46 +72,56 @@ public class AuthController(AppDbContext _context) : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(UserRegisterViewModel user)
     {
         if (!ModelState.IsValid)
-        {
-            System.Console.WriteLine("Model není validní");
+            return View(user);
+        
+        var normalizedEmail = user.Email.Trim().ToLower();
+        var normalizedUsername = user.Username.Trim().ToLower();
+        
+        var collisionUsername = await _context.Users.AnyAsync(u => u.Username == normalizedUsername);
+
+        if (collisionUsername)    
+        {  
+            ModelState.AddModelError("Username", "Username is already taken");
             return View(user);
         }
 
-        var collision = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email || u.Username == user.Username);
+        var collisionEmail = await _context.Users.AnyAsync(u => u.Email == normalizedEmail);
 
-        if (collision is not null)
+        if (collisionEmail)
         {
-            Console.WriteLine("Nastala kolize");
+            ModelState.AddModelError("Email", "Email is already taken");
             return View(user);
         }
-            
         
         
-        if (user.Password != user.ConfirmPassword)   
-        { 
-            System.Console.WriteLine("Hesla nejsou stejná");
-            return View(user);
-        }
+        
         
         User newUser = new User();
 
-        var passwordhasher = new PasswordHasher<User>();
-        var hashedpassword = passwordhasher.HashPassword(newUser, user.Password);
+        var passwordHasher = new PasswordHasher<User>();
+        var hashedpassword = passwordHasher.HashPassword(newUser, user.Password);
         
 
-        newUser.Email = user.Email;
-        newUser.Username = user.Username;
+        newUser.Email = normalizedEmail;
+        newUser.Username = normalizedUsername;
         newUser.PasswordHash = hashedpassword;
 
         await _context.Users.AddAsync(newUser);
 
         await _context.SaveChangesAsync();
 
-        System.Console.WriteLine("Úspěšně zaregistrován");
-
         return RedirectToAction("Login");
+    }
+
+    public async Task<IActionResult> LogOut()
+    {
+        await HttpContext.SignOutAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme
+        );
+        return Redirect("/Auth/Login");
     }
 }
