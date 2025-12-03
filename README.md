@@ -1,6 +1,15 @@
 # MyForum (Work in Progress)
 
-MyForum je jednoduchá, moderní a rychlá webová aplikace typu fórum, která umoní uivatelùm zakládat témata, psát pøíspìvky a diskutovat v pøehledném prostøedí. Projekt je momentálnì **ve vıvoji**.
+MyForum je jednoduchÃ¡, modernÃ­ a rychlÃ¡ webovÃ¡ aplikace typu fÃ³rum, kterÃ¡ umoÅ¾nÃ­ uÅ¾ivatelÅ¯m zaklÃ¡dat tÃ©mata, psÃ¡t pÅ™Ã­spÄ›vky a diskutovat v pÅ™ehlednÃ©m prostÅ™edÃ­. Projekt je momentÃ¡lnÄ› **ve vÃ½voji**.
 
-## Projekt je stále ve vıvoji
-Tento repozitáø obsahuje nedokonèenou verzi aplikace. Funkce, struktura projektu i UI se mohou rychle mìnit.
+## Projekt je stÃ¡le ve vÃ½voji
+Tento repozitÃ¡Å™ obsahuje nedokonÄenou verzi aplikace. Funkce, struktura projektu i UI se mohou rychle mÄ›nit.
+
+## Tech Stack
+- ASP.NET Core MVC
+- .NET 10
+- Docker
+- Entity Framework Core
+- PostgreSQL
+- HTML/CSS
+- JavaScript
