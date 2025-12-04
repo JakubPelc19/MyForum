@@ -12,10 +12,12 @@
     <header class="navbar-header">
         <nav class="navbar">
             <div class="navbar-sections">
-                <a asp-area="" asp-controller="Home" asp-action="Index">MyForum</a>
+                <a asp-area="" id="navbar-logo" asp-controller="Home" asp-action="Index">MyForum</a>
                 <div>
-                    <ul>
+                    <ul class="navbar-list">
                         <li>
+                            <a asp-controller="Auth" asp-action="Login">Login</a>
+                            <a asp-controller="Auth" asp-action="Register">Register</a>
                             <a asp-controller="Auth" asp-action="LogOut">Sign out</a>
                         </li>
                     </ul>
