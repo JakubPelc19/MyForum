@@ -1,0 +1,54 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    width: 100%;
+    height: calc(100% - 80px);
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+}
+
+.navbar-header {
+    width: 100%;
+    height: 60px;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+    margin-bottom: 20px;
+}
+
+.navbar {
+    width: 100%;
+    height: 100%;
+}
+
+.navbar-sections {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar-sections a {
+    text-decoration: none;
+    color: black;
+    padding-right: 10px;
+    padding-left: 10px;
+    font-size: 18px;
+}
+
+#navbar-logo {
+    font-size: 20px;
+}
