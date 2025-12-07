@@ -9,15 +9,12 @@
     <link rel="stylesheet" href="~/MyForum.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav>
-            <div>
-                <a asp-area="" asp-controller="Home" asp-action="Index">MyForum</a>
-                <button aria-expanded="false" aria-label="Toggle navigation">
-                    <span></span>
-                </button>
+    <header class="navbar-header">
+        <nav class="navbar">
+            <div class="navbar-sections">
+                <a asp-area="" id="navbar-logo" asp-controller="Home" asp-action="Index">MyForum</a>
                 <div>
-                    <ul>
+                    <ul class="navbar-list">
                         <li>
                             
                         </li>
@@ -27,12 +24,12 @@
         </nav>
     </header>
     <div class="main-container">
-        <main role="main">
+        <main role="main" class="content">
             @RenderBody()
         </main>
     </div>
 
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
