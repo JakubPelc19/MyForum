@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyForum.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251207180414_InitialCreate")]
+    [Migration("20251208123704_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -209,6 +209,10 @@ namespace MyForum.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("ForumUserName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
