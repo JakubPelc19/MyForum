@@ -8,7 +8,6 @@ Tento repozitář obsahuje nedokončenou verzi aplikace. Funkce, struktura proje
 ## Tech Stack
 - ASP.NET Core MVC
 - .NET 10
-- Docker
 - Entity Framework Core
 - PostgreSQL
 - HTML/CSS
