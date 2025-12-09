@@ -11,4 +11,10 @@ public class HomeController : Controller
     {
         return View();
     }
+    
+    [Authorize]
+    public IActionResult CreateThread()
+    {
+        return View();
+    }
 }
