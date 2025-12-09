@@ -1,0 +1,18 @@
+﻿@using MyForum.Views.Home
+@{
+    ViewData["Title"] = "Create Thread";
+}
+
+@model CreateThreadModel
+
+<form asp-for="CreateThread" method="POST">
+    <input asp-for="Title"/>
+    <span asp-validation-for="Title"></span>
+    <input asp-for="Description"/>
+    <span asp-validation-for="Description"></span>
+    <button type="submit">Create new thread</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

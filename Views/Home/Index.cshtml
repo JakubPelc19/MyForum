@@ -2,4 +2,10 @@
     ViewData["Title"] = "Home";
 }
 
+@{
+    if (User.Identity?.IsAuthenticated ?? false)
+    {
+       <a asp-action="CreateThread">Create Thread</a>
+    }
+}
 
