@@ -6,7 +6,7 @@ namespace MyForum.Controllers;
 
 public class HomeController : Controller
 {
-    [Authorize]
+    [AllowAnonymous]
     public IActionResult Index()
     {
         return View();
