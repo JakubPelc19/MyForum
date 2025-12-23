@@ -1,7 +1,9 @@
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyForum.Views.Home;
 
 namespace MyForum.Controllers;
@@ -9,9 +11,10 @@ namespace MyForum.Controllers;
 public class HomeController(AppDbContext _context) : Controller
 {
     [AllowAnonymous]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var threads = await _context.Threads.ToListAsync();
+        return View(threads);
     }
     
     [Authorize]

@@ -1,11 +1,19 @@
 ﻿@{
     ViewData["Title"] = "Home";
 }
+@model List<ThreadForum>
 
-@{
-    if (User.Identity?.IsAuthenticated ?? false)
+@if (User.Identity?.IsAuthenticated ?? false)
     {
        <a asp-action="CreateThread">Create Thread</a>
     }
-}
+
+
+<ul>
+    @foreach (var thread in Model)
+    {
+        <li>@thread.Title</li>   
+    }
+</ul>
+
 

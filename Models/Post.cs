@@ -7,8 +7,8 @@ public class Post
     public ThreadForum ThreadForum { get; set; } = null!;
     public string AuthorId { get; set; }
     public User Author { get; set; } = null!;
-    public string Title { get; set; } = string.Empty;
-    public string Content { get; set; } = string.Empty;
+    public string Title { get; set; }
+    public string Content { get; set; }
     public int Likes { get; set; }
     public ICollection<Comment> Comments { get; } = new List<Comment>();
     

@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = ViewData["ThreadTitle"] + " - Thread";
+}
+@model List<Post>
+
+
+
+<ul>
+    @foreach (var post in Model)
+    {
+        <li>@post.Title</li>
+    }
+</ul>
+
