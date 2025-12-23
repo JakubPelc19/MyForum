@@ -22,7 +22,7 @@ public class HomeController(AppDbContext _context) : Controller
     {
         return View();
     }
-
+    
     [HttpPost]
     public async Task<IActionResult> CreateThread(CreateThreadModel model)
     {

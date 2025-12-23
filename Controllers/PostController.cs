@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyForum.Controllers
 {
@@ -14,7 +15,7 @@ namespace MyForum.Controllers
             if (post is null)
                 return NotFound();
 
-            var comments = post.Comments;
+            var comments = await _context.Comments.Where(c => c.PostId == id).ToListAsync();
             
             return View(comments);
         }
