@@ -1,12 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyForum.Controllers
 {
-    public class ThreadController : Controller
+    [Route("[controller]")]
+    public class ThreadController(AppDbContext _context) : Controller
     {
-        public IActionResult Index()
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Index(int id)
         {
-            return View();
+            var thread = await _context.Threads.FindAsync(id);
+
+            if (thread is null)
+            {
+                return NotFound();
+            }
+
+            var posts = await _context.Posts.Where(p => p.ThreadId == id).ToListAsync();
+
+            
+            ViewData["ThreadTitle"] = thread.Title;
+            return View(posts);
         }
     }
 }
