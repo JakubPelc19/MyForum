@@ -16,7 +16,7 @@ namespace MyForum.Controllers
                 return NotFound();
             }
 
-            var posts = await _context.Posts.Where(p => p.ThreadId == id).ToListAsync();
+            var posts = thread.Posts;
 
             
             ViewData["ThreadTitle"] = thread.Title;

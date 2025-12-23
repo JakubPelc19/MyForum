@@ -12,7 +12,7 @@
 <ul>
     @foreach (var thread in Model)
     {
-        <li>@thread.Title</li>   
+        <li><a asp-controller="Thread" asp-action="Index" asp-route-id="@thread.Id">@thread.Title</a></li>   
     }
 </ul>
 
