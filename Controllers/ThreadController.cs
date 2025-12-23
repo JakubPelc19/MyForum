@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyForum.Views.Thread;
 
 namespace MyForum.Controllers
 {
@@ -21,6 +23,22 @@ namespace MyForum.Controllers
             
             ViewData["ThreadTitle"] = thread.Title;
             return View(posts);
+        }
+
+        [Authorize]
+        public IActionResult CreatePost()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreatePost(CreatePostModel model)
+        { 
+            if (!ModelState.IsValid)
+            {
+
+            }
         }
     }
 }
