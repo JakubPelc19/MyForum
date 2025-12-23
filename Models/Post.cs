@@ -3,7 +3,7 @@ using MyForum.Models;
 public class Post
 {
     public int Id { get; set; }
-    public int ThreadId { get; set; }
+    public int ThreadForumId { get; set; }
     public ThreadForum ThreadForum { get; set; } = null!;
     public string AuthorId { get; set; }
     public User Author { get; set; } = null!;

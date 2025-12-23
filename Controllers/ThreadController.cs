@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyForum.Views.Thread;
+using System.Security.Claims;
 
 namespace MyForum.Controllers
 {
@@ -9,7 +10,7 @@ namespace MyForum.Controllers
     public class ThreadController(AppDbContext _context) : Controller
     {
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(IndexModel model, int id)
         {
             var thread = await _context.Threads.FindAsync(id);
 
@@ -18,27 +19,79 @@ namespace MyForum.Controllers
                 return NotFound();
             }
 
-            var posts = thread.Posts;
+            model.ThreadId = id;
+            model.Posts = await _context.Posts.Where(p => p.ThreadForumId == id).ToListAsync();
 
             
+
+
             ViewData["ThreadTitle"] = thread.Title;
-            return View(posts);
+            return View(model);
         }
 
         [Authorize]
-        public IActionResult CreatePost()
+        [HttpGet("{id:int}/CreatePost")]
+        public async Task<IActionResult> CreatePost(int id)
         {
+            var thread = await _context.Threads.FindAsync(id);
+
+            if (thread is null)
+            {
+                return NotFound();
+            }
+
             return View();
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> CreatePost(CreatePostModel model)
+        
+        [HttpPost("{id:int}/CreatePost")]
+        public async Task<IActionResult> CreatePost(CreatePostModel model, int id)
         { 
             if (!ModelState.IsValid)
             {
-
+                return View(model);
             }
+
+            var thread = await _context.Threads.FindAsync(id);
+
+            if (thread is null)
+            {
+                return NotFound();
+            }
+
+            var title = model.Title.Trim();
+            var content = model.Content.Trim();
+            var authorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (authorId is null)
+            {
+                return Unauthorized();
+            }
+
+            if (string.IsNullOrEmpty(title))
+            {
+                ModelState.AddModelError("Title", "Title cannot be empty.");
+                return View(model);
+            }
+
+            if (string.IsNullOrEmpty(content))
+            {
+                ModelState.AddModelError("Content", "Content cannot be empty.");
+                return View(model);
+            }
+
+            var post = new Post
+            {
+                Title = title,
+                Content = content,
+                AuthorId = authorId,
+                ThreadForumId = thread.Id
+            };
+
+            await _context.Posts.AddAsync(post);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { id = post.ThreadForumId });
         }
     }
 }

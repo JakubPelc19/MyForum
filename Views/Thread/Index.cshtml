@@ -1,15 +1,20 @@
-﻿
+﻿@using MyForum.Views.Thread
+
 @{
     ViewData["Title"] = ViewData["ThreadTitle"] + " - Thread";
 }
-@model List<Post>
+@model IndexModel
 
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <a asp-action="CreatePost" asp-route-id="@Model.ThreadId">Create Post</a>
+}
 
 
 <ul>
-    @foreach (var post in Model)
+    @foreach (var post in Model.Posts)
     {
-        <li>@post.Title</li>
+        <li><a asp-controller="Post" asp-action="Index" asp-route-id="@post.Id">@post.Title</a></li>
     }
 </ul>
 
