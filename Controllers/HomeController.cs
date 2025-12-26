@@ -13,7 +13,8 @@ public class HomeController(AppDbContext _context) : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        var threads = await _context.Threads.ToListAsync();
+        var threads = await _context.Threads.OrderBy(t => t.Id).ToListAsync();
+
         return View(threads);
     }
     

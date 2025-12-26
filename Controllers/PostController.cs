@@ -6,8 +6,6 @@ namespace MyForum.Controllers
     [Route("Thread/{threadId:int}/[controller]/{postId:int}")]
     public class PostController(AppDbContext _context) : Controller
     {
-
-        
         public async Task<IActionResult> Index(int threadId, int postId)
         {
             
@@ -16,7 +14,7 @@ namespace MyForum.Controllers
             if (post is null)
                 return NotFound();
 
-            var comments = await _context.Comments.Where(c => c.PostId == postId).ToListAsync();
+            var comments = await _context.Comments.Where(c => c.PostId == postId).OrderBy(c => c.Id).ToListAsync();
             
             return View(comments);
         }

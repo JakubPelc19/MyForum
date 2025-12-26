@@ -1,0 +1,19 @@
+﻿@using MyForum.Views.Thread
+
+@{
+    ViewData["Title"] = "Edit Thread";
+}
+
+@model EditThreadModel
+
+<form asp-for="EditThread" method="POST">
+    <input asp-for="Title" />
+    <span asp-validation-for="Title"></span>
+    <input asp-for="Description" />
+    <span asp-validation-for="Description"></span>
+    <button type="submit">Edit Thread</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

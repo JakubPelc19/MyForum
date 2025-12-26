@@ -1,13 +1,14 @@
 ﻿@using MyForum.Views.Thread
 
 @{
-    ViewData["Title"] = ViewData["ThreadTitle"] + " - Thread";
+    ViewData["Title"] = ViewData["ThreadTitle"] + "Thread";
 }
 @model IndexModel
 
 @if (User.Identity?.IsAuthenticated ?? false)
 {
     <a asp-action="CreatePost" asp-route-id="@Model.ThreadId">Create Post</a>
+    <a asp-action="EditThread" asp-route-id="@Model.ThreadId">Edit Thread</a>
 }
 
 
