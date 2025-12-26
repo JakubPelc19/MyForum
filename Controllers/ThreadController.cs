@@ -6,10 +6,10 @@ using System.Security.Claims;
 
 namespace MyForum.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/{id:int}")]
     public class ThreadController(AppDbContext _context) : Controller
     {
-        [HttpGet("{id:int}")]
+        [HttpGet]
         public async Task<IActionResult> Index(IndexModel model, int id)
         {
             var thread = await _context.Threads.FindAsync(id);
@@ -30,7 +30,7 @@ namespace MyForum.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id:int}/CreatePost")]
+        [HttpGet("CreatePost")]
         public async Task<IActionResult> CreatePost(int id)
         {
             var thread = await _context.Threads.FindAsync(id);
@@ -44,7 +44,7 @@ namespace MyForum.Controllers
         }
 
         
-        [HttpPost("{id:int}/CreatePost")]
+        [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost(CreatePostModel model, int id)
         { 
             if (!ModelState.IsValid)
@@ -93,5 +93,52 @@ namespace MyForum.Controllers
 
             return RedirectToAction("Index", new { id = post.ThreadForumId });
         }
+
+        [Authorize]
+        [HttpGet("EditThread")]
+        public async Task<IActionResult> EditThread(int id)
+        {
+            var thread = await _context.Threads.FindAsync(id);
+            
+            if (thread is null)
+                return NotFound();
+
+            return View();
+
+        }
+
+        [HttpPost("EditThread")]
+        public async Task<IActionResult> EditThread(EditThreadModel model, int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var thread = await _context.Threads.FindAsync(id);
+
+            if (thread is null)
+                return NotFound();
+
+            var title = model.Title.Trim();
+            var description = model.Description?.Trim();
+
+            if (string.IsNullOrEmpty(title))
+            {
+                ModelState.AddModelError("Title", "Title cannot be empty.");
+                return View(model);
+            }
+
+            thread.Title = title;
+            thread.Description = description;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { id = thread.Id });
+
+
+        }
+        
+
     }
 }

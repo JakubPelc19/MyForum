@@ -6,8 +6,6 @@ namespace MyForum.Controllers
     [Route("Thread/{threadId:int}/[controller]/{postId:int}")]
     public class PostController(AppDbContext _context) : Controller
     {
-
-        
         public async Task<IActionResult> Index(int threadId, int postId)
         {
             
