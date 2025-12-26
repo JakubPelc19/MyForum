@@ -14,7 +14,7 @@ namespace MyForum.Controllers
             if (post is null)
                 return NotFound();
 
-            var comments = await _context.Comments.Where(c => c.PostId == postId).ToListAsync();
+            var comments = await _context.Comments.Where(c => c.PostId == postId).OrderBy(c => c.Id).ToListAsync();
             
             return View(comments);
         }

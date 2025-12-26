@@ -20,7 +20,7 @@ namespace MyForum.Controllers
             }
 
             model.ThreadId = id;
-            model.Posts = await _context.Posts.Where(p => p.ThreadForumId == id).ToListAsync();
+            model.Posts = await _context.Posts.Where(p => p.ThreadForumId == id).OrderBy(p => p.Id).ToListAsync();
 
             
 
